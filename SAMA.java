@@ -14,20 +14,16 @@ class Pawn {
 	public void setRight(int right) {
 		this.right = right;
 	}
-	public int getLeft()
-	{
+	public int getLeft() {
 		return left;
 	}
-	public int getUp()
-	{
+	public int getUp() {
 		return up;
 	}
-	public int getRight()
-	{
+	public int getRight() {
 		return right;
 	}
-	public int getPoints()
-	{
+	public int getPoints() {
 		return left+up+right;
 	}
 }
@@ -35,30 +31,55 @@ class Move
 {
 	private int X=3;
 	private int Y=3;
-	private int[] busy;
+	private boolean gameOver = false;
+	private int[][] busy;
 	Pawn[] pawns;
-	public void setBusy(String []a) {
-		for(int i = 0; i < a.length; i++)
-			busy[i]=Integer.valueOf(a[i]);
+	public void setGameOver( boolean gameOver) {
+		this.gameOver = gameOver;
 	}
-	public void setBusy(int []a) {
-		for(int i = 0; i < a.length; i++)
-			busy[i]=a[i];
+	public boolean getGameOver( ) {
+		return gameOver;
 	}
 	public void setBusy() {
-		busy = new int [X*Y];
+		busy = new int [Y][X];
 	}
-	public int getBusy(int i) {
-		return busy[i];
+	public void setBusy(String []a) {
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+				busy[i][j] = Integer.valueOf(a[i*X + j]);
 	}
-	public int getBusyLength() {
-		return busy.length;
+	public void setBusy(int []a) {
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+				busy[i][j] = a[i*X + j];
+	}
+	public void setBusy(int y, int x, int p) {
+				busy[y][x] = p;
+	}
+	public void setNewBusy() {
+		busy = new int [Y][X];
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++) {
+				if(i == 0)
+					busy[i][j] = 2;
+				else if(i == Y-1)
+					busy[i][j] = 1;
+				else
+					busy[i][j] = 0;
+			}
+	}
+	public int getBusy(int y, int x) {
+		return busy[y][x];
+	}
+	public int[][] getBusy() {
+		return busy;
 	}
 	public int getPawn() {
 		int pawn=0;
-		for(int i = 0; i < X*Y; i++)
-			if(busy[i] == 1)
-				pawn++;
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+				if(busy[i][j] == 2)
+					pawn++;
 		return pawn;
 	}
 	public int getX() {
@@ -66,6 +87,46 @@ class Move
 	}
 	public int getY() {
 		return Y;
+	}
+	public int getPawnX(int numberOfPawns) {
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+				if(busy[i][j] == 2) {
+					numberOfPawns--;
+					if(numberOfPawns == 0)
+						return j;
+				}
+		return -1;
+	}
+	public int getPawnY(int numberOfPawns) {
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+				if(busy[i][j] == 2) {
+					numberOfPawns--;
+					if(numberOfPawns == 0)
+						return i;
+				}
+		return -1;
+	}
+	public int getPPawnX(int numberOfPawns) {
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+				if(busy[i][j] == 1) {
+					numberOfPawns--;
+					if(numberOfPawns == 0)
+						return j;
+				}
+		return -1;
+	}
+	public int getPPawnY(int numberOfPawns) {
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+				if(busy[i][j] == 1) {
+					numberOfPawns--;
+					if(numberOfPawns == 0)
+						return i;
+				}
+		return -1;
 	}
 }
 
@@ -102,8 +163,9 @@ class Data
 		PrintWriter pw = new PrintWriter(new File("data.txt"));
 		pw.print(move + "\n");
 		for (int i = 0; i < move; i++) {
-			for (int j = 0; j < moves[i].getBusyLength(); j++)
-				pw.print(moves[i].getBusy(j) + "\t");
+			for (int j = 0; j < moves[i].getY(); j++)
+				for (int l = 0; l < moves[i].getX(); l++)
+					pw.print(moves[i].getBusy(j, l) + "\t");
 			pw.print("\n");
 			for (int j = 0; j < pawn; j++) {
 				pw.print(moves[i].pawns[j].getLeft() + "\t");
@@ -118,8 +180,9 @@ class Data
 		PrintWriter pw = new PrintWriter(new File("data.txt"));
 		pw.print(move+1 + "\n");
 		for (int i = 0; i < move; i++) {
-			for (int j = 0; j < moves[i].getBusyLength(); j++)
-				pw.print(moves[i].getBusy(j) + "\t");
+			for (int j = 0; j < moves[i].getY(); j++)
+				for (int l = 0; l < moves[i].getX(); l++)
+					pw.print(moves[i].getBusy(j, l) + "\t");
 			pw.print("\n");
 			for (int j = 0; j < pawn; j++) {
 				pw.print(moves[i].pawns[j].getLeft() + "\t");
@@ -127,8 +190,9 @@ class Data
 				pw.print(moves[i].pawns[j].getRight() + "\n");
 			}
 		}
-		for (int j = 0; j < newMove.getBusyLength(); j++)
-			pw.print(newMove.getBusy(j) + "\t");
+		for (int j = 0; j < newMove.getY(); j++)
+			for (int l = 0; l < newMove.getX(); l++)
+				pw.print(newMove.getBusy(j, l) + "\t");
 		pw.print("\n");
 		for (int j = 0; j < pawn; j++) {
 			pw.print(newMove.pawns[j].getLeft() + "\t");
@@ -139,29 +203,76 @@ class Data
 	}
 }
 
-class SAMA
-{
+class SAMA {
+	private static final String GAME = "game";
+	private static final String NEW = "new";
+	private static final String EXIT = "exit";
+	private static final String UP = "u";
+	private static final String LEFT = "l";
+	private static final String RIGHT = "r";
 	public static void main(String []args) throws IOException {
-/*ÏÐÎÂÅÐÊÀ		Data var=new Data(); ÏÐÎÂÅÐÊÀ
-		System.out.println(var.move);
-		for(int i = 0; i < var.move; i++) {
-			System.out.println(var.moves[i].getBusy(0)+" "+var.moves[i].getBusy(3)+" "+var.moves[i].getBusy(6));
-			System.out.println(var.moves[i].pawns[0].getRight());
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		boolean Exit=false;
+		while(Exit==false) {
+			String choice=br.readLine();
+			if(choice.equals(GAME)) {
+				game();
+			}
+			else if(choice.equals(NEW)) {
+			}
+			else if(choice.equals(EXIT))
+				Exit=true;
 		}
-		Move newMove = new Move();
-		newMove.setBusy();
-		int a[]={2,2,2,0,0,0,1,1,1}, pawn;
-		newMove.setBusy(a);
-		pawn=newMove.getPawn();
-		newMove.pawns = new Pawn[pawn];
-		for(int l = 0; l < pawn; l++) {
-			newMove.pawns[l] = new Pawn();
-			newMove.pawns[l].setLeft(15);
-			newMove.pawns[l].setUp(7);
-			newMove.pawns[l].setRight(9);
+	}
+	public static void game() throws IOException {
+		Move move = new Move();
+		move.setNewBusy();
+		boardInSystem(move);
+		while(!move.getGameOver()) {
+			move = PMove(move);
+			boardInSystem(move);
+			if(move.getGameOver())
+				return;
+			move = SMove(move);
+			boardInSystem(move);
 		}
-		var.save();
-		var.save(newMove);
-*/
+		saveSMove();
+	}
+	public static Move PMove(Move move) throws IOException {
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		String choice=br.readLine();
+		String a[] = choice.split(" ");
+		int numberOfPawns = Integer.valueOf(a[0]);
+		int x = move.getPPawnX(numberOfPawns);
+		int y = move.getPPawnY(numberOfPawns);
+		move.setBusy(y, x, 0);
+		if(a[1].equals(UP))
+			move.setBusy(y-1, x, 1);
+		else if(a[1].equals(LEFT))
+			move.setBusy(y-1, x-1, 1);
+		else
+			move.setBusy(y-1, x+1, 1);
+		return move;
+	}
+	public static Move SMove(Move move) throws IOException {
+		return move;
+	}
+	public static void saveSMove() throws IOException {
+
+	}
+	public static void boardInSystem(Move move) {
+		for(int i = 0; i < move.getY(); i++) {
+			for(int j = 0; j < move.getX(); j++)
+				System.out.print(move.getBusy(i, j)+" ");
+			System.out.println();
+		}
+	}
+	public static boolean sM(int a[], int b[])  {
+		if (a.length!=b.length)
+			return false;
+		for(int i = 0; i < a.length; i++)
+			if (a[i] != b[i])
+				return false;
+		return true;
 	}
 }
