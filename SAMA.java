@@ -1,18 +1,29 @@
 import java.io.*;
 import java.util.*;
 
-interface Player {
+interface IPlayer 
+{
 	public Step doStep(Game g) throws IOException;
 }
-class HumanPlayer implements Player {
+
+abstract class Player implements IPlayer
+{
+	protected void someMethod()
+	{
+	}
+}
+
+class HumanPlayer extends Player {
 	private String name;
 	private int playerNumber;
-	public HumanPlayer(int playerNumber) throws IOException {
+	public HumanPlayer(int playerNumber) throws IOException 
+	{
 		this.playerNumber = playerNumber;
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("Введите имя "+playerNumber+" игрока");
 		name = br.readLine();
-		for(;;) {
+		for(;;) 
+		{
 			System.out.println("Имя "+playerNumber+" игрока - "+name+", вы уверены?(y / n)");
 			String choice = br.readLine();
 			if(choice.equals("y"))
@@ -21,23 +32,103 @@ class HumanPlayer implements Player {
 			name = br.readLine();
 		}
 	}
-	public Step doStep(Game g) {
-//		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+	public Step doStep(Game g) throws IOException
+	{
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		Step step = new Step();
+		step.setPlayerNumber(playerNumber);
 		System.out.println("Сейчас ходит игрок №"+playerNumber+" - "+name);
 		g.getBattleFieldInSystem();
-//		String choice = br.readLine();
+		for (;;) {
+			System.out.println("Введите координты пешки которй вы хотите походить");
+			String choice = br.readLine();
+                        try {
+                        	String []XY = choice.split(" ");
+				step.setOldX(Integer.valueOf(XY[0]));
+				step.setOldY(Integer.valueOf(XY[1]));
+			}
+                        catch (NumberFormatException e) {
+                        	System.out.println("Вводится так:");
+				System.out.println("x y");
+				System.out.println("где x y - координты пешки");
+				continue;		
+			} 
+			catch (ArrayIndexOutOfBoundsException e2) {		
+                        	System.out.println("Вводится так:");
+				System.out.println("x y");
+				System.out.println("где x y - координты пешки");
+				continue;		
 
+			}
+			if(g.getBattleField(step.getOldY(), step.getOldX()) != playerNumber) {
+				System.out.println("На выбранной клетке нет вашей пешки");
+				g.getBattleFieldInSystem();
+				continue;
+					
+			} 
+			break;
+		}
+                for (;;) {
+			System.out.println("Введите координты клетки в которую вы хотите походить");
+			String choice = br.readLine();
+                        try {
+                        	String []XY = choice.split(" ");
+				step.setNewX(Integer.valueOf(XY[0]));
+				step.setNewY(Integer.valueOf(XY[1]));
+			}
+                        catch (NumberFormatException e) {
+                        	System.out.println("Вводится так:");
+				System.out.println("x y");
+				System.out.println("где x y - координты клетки");
+				continue;		
+			} 
+			catch (ArrayIndexOutOfBoundsException e2) {		
+                        	System.out.println("Вводится так:");
+				System.out.println("x y");
+				System.out.println("где x y - координаты клетки");
+				continue;		
 
-
+			}
+			int m;
+			if(playerNumber == 1)
+				m=-1;
+			else
+				m=1;
+			if(step.getNewY()-step.getOldY()==m)	
+			{
+				if(step.getNewX()-step.getOldX() > 1 || step.getNewX()-step.getOldX() < -1) {
+					System.out.println("Ход невозможен");
+					continue;
+				}
+				if(g.getBattleField(step.getNewY(), step.getNewX()) == playerNumber) {
+					System.out.println("На выбранной клетке стоит ваша пешка");
+					g.getBattleFieldInSystem();
+					continue;
+				}
+				if(step.getNewX()-step.getOldX() != 0 && g.getBattleField(step.getNewY(), step.getNewX()) == 0) {
+					System.out.println("Ход невозможен");
+					continue;
+				}
+			} 
+			else
+			{
+				System.out.println("Ход невозможен");
+				continue;		
+			}
+			break;
+		}
 		return step;
 	}
 }
 class Step {
+	private int playerNumber;
 	private int oldX;
 	private int oldY;
 	private int newX;
 	private int newY;
+	public void setPlayerNumber(int playerNumber) {
+		this.playerNumber = playerNumber;
+	}
 	public void setOldX(int x) {
 		oldX = x;
 	}
@@ -49,6 +140,9 @@ class Step {
 	}
 	public void setNewY(int y) {
 		newY = y;
+	}
+	public int getPlayerNumber() {
+		return playerNumber;
 	}
 	public int getOldX() {
 		return oldX;
@@ -71,8 +165,17 @@ class Game {
 	public boolean getGameOver() {
 			return gameOver;
 	}
-	public boolean step(Step step) {
-		return true;
+	public void step(Step step) {
+		battleField[step.getOldY()][step.getOldY()] = 0;
+		battleField[step.getNewY()][step.getNewY()] = step.getPlayerNumber();	
+	}
+	public int getBattleField(int y, int x) {
+		try {
+			return battleField[y][x];
+		}
+		catch (ArrayIndexOutOfBoundsException e) {		
+			return -1;
+		}
 	}
 	public void getBattleFieldInSystem() {
 			for(int i = 0; i < Y; i++) {
@@ -115,21 +218,13 @@ class SAMA {
 		Game g = new Game();
 		Step step = new Step();
 		g.setNewBattleField();
-		Player p1 = new HumanPlayer(1);
-		Player p2 = new HumanPlayer(2);
+		IPlayer p1 = new HumanPlayer(1);
+		IPlayer p2 = new HumanPlayer(2);
 		while(!g.getGameOver()) {
-			boolean possible = false;
-			while(!possible) {
-				step = p1.doStep(g);
-				possible = g.step(step);
-			}
+			g.step(p1.doStep(g));
 			if(g.getGameOver())
 				return;
-			possible = false;
-			while(!possible) {
-				step = p2.doStep(g);
-				possible = g.step(step);
-			}
+			g.step(p2.doStep(g));
 		}
 		return;
 	}
