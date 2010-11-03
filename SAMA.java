@@ -1,123 +1,159 @@
 import java.io.*;
 import java.util.*;
 
-interface IPlayer 
+interface IPlayer
 {
 	public Step doStep(Game g) throws IOException;
+	public String getName();
 }
 
 abstract class Player implements IPlayer
 {
-	protected void someMethod()
-	{
-	}
-}
-
-class HumanPlayer extends Player {
-	private String name;
-	private int playerNumber;
-	public HumanPlayer(int playerNumber) throws IOException 
+	protected String name;
+	protected int playerNumber;
+	protected void nameInit(int playerNumber) throws IOException
 	{
 		this.playerNumber = playerNumber;
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("Ââåäèòå èìÿ "+playerNumber+" èãğîêà");
+		System.out.println("‚¢¥¤¨â¥ ¨¬ï "+playerNumber+" ¨£à®ª ");
 		name = br.readLine();
-		for(;;) 
+		for(;;)
 		{
-			System.out.println("Èìÿ "+playerNumber+" èãğîêà - "+name+", âû óâåğåíû?(y / n)");
+			System.out.println("ˆ¬ï "+playerNumber+" ¨£à®ª  - "+name+", ¢ë ã¢¥à¥­ë?(y / n)");
 			String choice = br.readLine();
 			if(choice.equals("y"))
 				return;
-			System.out.println("Ïîâòîğèòå ââîä");
+			System.out.println("®¢â®à¨â¥ ¢¢®¤");
 			name = br.readLine();
 		}
+
+	}
+	public String getName() {
+		return name;
+	}
+}
+
+class HumanPlayer extends Player
+{
+	public HumanPlayer(int playerNumber) throws IOException
+	{
+		nameInit(playerNumber);
 	}
 	public Step doStep(Game g) throws IOException
 	{
-		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		Step step = new Step();
 		step.setPlayerNumber(playerNumber);
-		System.out.println("Ñåé÷àñ õîäèò èãğîê ¹"+playerNumber+" - "+name);
+		System.out.println("‘¥©ç á å®¤¨â ¨£à®ª ü"+playerNumber+" - "+name);
 		g.getBattleFieldInSystem();
+		for(;;) {
+			step = choicePawn(g, step);
+			step = choiceSquare(g, step);
+			if(step.getPlayerNumber() == playerNumber)
+				break;
+			step.setPlayerNumber(playerNumber);
+		}
+		return step;
+	}
+	protected Step choicePawn(Game g, Step step) throws IOException
+	{
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		for (;;) {
-			System.out.println("Ââåäèòå êîîğäèíòû ïåøêè êîòîğé âû õîòèòå ïîõîäèòü");
+			System.out.println("‚¢¥¤¨â¥ ª®®à¤¨­ âë ¯¥èª¨ ª®â®à®© ¢ë å®â¨â¥ ¯®å®¤¨âì");
 			String choice = br.readLine();
-                        try {
-                        	String []XY = choice.split(" ");
+			try {
+				String []XY = choice.split(" ");
 				step.setOldX(Integer.valueOf(XY[0]));
 				step.setOldY(Integer.valueOf(XY[1]));
 			}
-                        catch (NumberFormatException e) {
-                        	System.out.println("Ââîäèòñÿ òàê:");
+			catch (NumberFormatException e)
+			{
+				System.out.println("‚¢®¤¨âáï â ª:");
 				System.out.println("x y");
-				System.out.println("ãäå x y - êîîğäèíòû ïåøêè");
-				continue;		
-			} 
-			catch (ArrayIndexOutOfBoundsException e2) {		
-                        	System.out.println("Ââîäèòñÿ òàê:");
-				System.out.println("x y");
-				System.out.println("ãäå x y - êîîğäèíòû ïåøêè");
-				continue;		
-
+				System.out.println("£¤¥ x y - ª®®à¤¨­â ë ¯¥èª¨");
+				continue;
 			}
-			if(g.getBattleField(step.getOldY(), step.getOldX()) != playerNumber) {
-				System.out.println("Íà âûáğàííîé êëåòêå íåò âàøåé ïåøêè");
+			catch (ArrayIndexOutOfBoundsException e2)
+			{
+				System.out.println("‚¢®¤¨âáï â ª:");
+				System.out.println("x y");
+				System.out.println("£¤¥ x y - ª®®à¤¨­â ë ¯¥èª¨");
+				continue;
+			}
+			if(g.getBattleField(step.getOldY(), step.getOldX()) != playerNumber)
+			{
+				System.out.println("  ¢ë¡à ­­®© ª«¥âª¥ ­¥â ¢ è¥© ¯¥èª¨");
 				g.getBattleFieldInSystem();
 				continue;
-					
-			} 
-			break;
+			}
+			return step;
 		}
-                for (;;) {
-			System.out.println("Ââåäèòå êîîğäèíòû êëåòêè â êîòîğóş âû õîòèòå ïîõîäèòü");
+	}
+	protected Step choiceSquare(Game g, Step step)throws IOException {
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		for (;;) {
+			System.out.println("‚¢¥¤¨â¥ ª®®à¤¨­âë ª«¥âª¨ ¢ ª®â®àãî ¢ë å®â¨â¥ ¯®å®¤¨âì");
+			System.out.println("…á«¨ ¢ë ¦¥« ¥â¥ á¬¥­¨âì ¯¥èªã ¢¢¥¤¨â¥ cp");
 			String choice = br.readLine();
-                        try {
-                        	String []XY = choice.split(" ");
+			if(choice.equals("cp"))
+			{
+				step.setPlayerNumber(0);
+				return step;
+			}
+			try
+			{
+				String []XY = choice.split(" ");
 				step.setNewX(Integer.valueOf(XY[0]));
 				step.setNewY(Integer.valueOf(XY[1]));
 			}
-                        catch (NumberFormatException e) {
-                        	System.out.println("Ââîäèòñÿ òàê:");
+			catch (NumberFormatException e) {
+				System.out.println("‚¢®¤¨âáï â ª:");
 				System.out.println("x y");
-				System.out.println("ãäå x y - êîîğäèíòû êëåòêè");
-				continue;		
-			} 
-			catch (ArrayIndexOutOfBoundsException e2) {		
-                        	System.out.println("Ââîäèòñÿ òàê:");
+				System.out.println("£¤¥ x y - ª®®à¤¨­ âë ª«¥âª¨");
+				continue;
+			}
+			catch (ArrayIndexOutOfBoundsException e2)
+			{
+				System.out.println("‚¢®¤¨âáï â ª:");
 				System.out.println("x y");
-				System.out.println("ãäå x y - êîîğäèíàòû êëåòêè");
-				continue;		
-
+				System.out.println("£¤¥ x y - ª®®à¤¨­ âë ª«¥âª¨");
+				continue;
 			}
 			int m;
 			if(playerNumber == 1)
 				m=-1;
 			else
 				m=1;
-			if(step.getNewY()-step.getOldY()==m)	
+			if(step.getNewY()-step.getOldY() == m)
 			{
-				if(step.getNewX()-step.getOldX() > 1 || step.getNewX()-step.getOldX() < -1) {
-					System.out.println("Õîä íåâîçìîæåí");
+				if(step.getNewX()-step.getOldX() > 1 || step.getNewX()-step.getOldX() < -1)
+				{
+					System.out.println("•®¤ ­¥¢®§¬®¦¥­");
 					continue;
 				}
-				if(g.getBattleField(step.getNewY(), step.getNewX()) == playerNumber) {
-					System.out.println("Íà âûáğàííîé êëåòêå ñòîèò âàøà ïåøêà");
+				if(g.getBattleField(step.getNewY(), step.getNewX()) == playerNumber)
+				{
+					System.out.println("  ¢ë¡à ­­®© ª«¥âª¥ áâ®¨â ¢ è  ¯¥èª ");
 					g.getBattleFieldInSystem();
 					continue;
 				}
-				if(step.getNewX()-step.getOldX() != 0 && g.getBattleField(step.getNewY(), step.getNewX()) == 0) {
-					System.out.println("Õîä íåâîçìîæåí");
+				if(step.getNewX()-step.getOldX() != 0 && g.getBattleField(step.getNewY(), step.getNewX()) == 0)
+				{
+					System.out.println("•®¤ ­¥¢®§¬®¦¥­");
 					continue;
 				}
-			} 
+				if(step.getNewX()-step.getOldX() == 0 && g.getBattleField(step.getNewY(), step.getNewX()) != 0)
+				{
+					System.out.println("•®¤ ­¥¢®§¬®¦¥­");
+					continue;
+				}
+			}
 			else
 			{
-				System.out.println("Õîä íåâîçìîæåí");
-				continue;		
+				System.out.println("•®¤ ­¥¢®§¬®¦¥­");
+				continue;
 			}
-			break;
+			return step;
 		}
-		return step;
 	}
 }
 class Step {
@@ -126,65 +162,186 @@ class Step {
 	private int oldY;
 	private int newX;
 	private int newY;
-	public void setPlayerNumber(int playerNumber) {
+	public void setPlayerNumber(int playerNumber)
+	{
 		this.playerNumber = playerNumber;
 	}
-	public void setOldX(int x) {
+	public void setOldX(int x)
+	{
 		oldX = x;
 	}
-	public void setOldY(int y) {
+	public void setOldY(int y)
+	{
 		oldY = y;
 	}
-	public void setNewX(int x) {
+	public void setNewX(int x)
+	{
 		newX = x;
 	}
-	public void setNewY(int y) {
+	public void setNewY(int y)
+	{
 		newY = y;
 	}
-	public int getPlayerNumber() {
+	public int getPlayerNumber()
+	{
 		return playerNumber;
 	}
-	public int getOldX() {
+	public int getOldX()
+	{
 		return oldX;
 	}
-	public int getOldY() {
+	public int getOldY()
+	{
 		return oldY;
 	}
-	public int getNewX() {
+	public int getNewX()
+	{
 		return newX;
 	}
-	public int getNewY() {
+	public int getNewY()
+	{
 		return newY;
 	}
 }
-class Game {
+class Game
+{
 	private int X=3;
 	private int Y=3;
 	private boolean gameOver = false;
 	private int[][] battleField;
-	public boolean getGameOver() {
-			return gameOver;
+	public boolean getGameOver(int playerNumber)
+	{
+		int p1 = 0, p2 = 0;
+		if(playerNumber == 1)
+		{
+			p1 = 0;
+			for(int j = 0; j < X; j++)
+				if(battleField[0][j] == 1)
+					p1 ++;
+			if(p1 != 0)
+				return true;
+		}
+		else
+		{
+			p2 = 0;
+			for(int j = 0; j < X; j++)
+				if(battleField[Y-1][j] == 2)
+					p2 ++;
+			if(p2 != 0)
+				return true;
+		}
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+			{
+				if(battleField[i][j] == 1)
+				{
+					if(battleField[i-1][j] == 2 || battleField[i-1][j] == 1)
+						p1 = 0;
+					else {
+						p1 ++;
+						i = Y;
+						j = X;
+					}
+					if (p1 == 0){
+						try
+						{
+							if(battleField[i-1][j-1] == 2) {
+								p1 ++;
+								i = Y;
+								j = X;
+							}
+						}
+						catch (ArrayIndexOutOfBoundsException e)
+						{
+						}
+						try
+						{
+							if(battleField[i-1][j+1] == 2) {
+								p1 ++;
+								i = Y;
+								j = X;
+							}
+						}
+						catch (ArrayIndexOutOfBoundsException e)
+						{
+						}
+					}
+				}
+			}
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+			{
+				if(battleField[i][j] == 2)
+				{
+					if(battleField[i+1][j] == 2 || battleField[i+1][j] == 1)
+						p2 = 0;
+					else {
+						p2 ++;
+						i = Y;
+						j = X;
+					}
+					if (p2 == 0)
+					{
+						try
+						{
+							if(battleField[i+1][j-1] == 2) {
+								p1 ++;
+								i = Y;
+								j = X;
+							}
+						}
+						catch (ArrayIndexOutOfBoundsException e)
+						{
+						}
+						try
+						{
+							if(battleField[i+1][j+1] == 2) {
+								p1 ++;
+								i = Y;
+								j = X;
+							}
+						}
+						catch (ArrayIndexOutOfBoundsException e)
+						{
+						}
+					}
+				}
+			}
+		if(p1 == 0 || p2 == 0)
+			return true;
+		return false;
 	}
-	public void step(Step step) {
-		battleField[step.getOldY()][step.getOldY()] = 0;
-		battleField[step.getNewY()][step.getNewY()] = step.getPlayerNumber();	
+	public void step(Step step)
+	{
+		battleField[step.getOldY()][step.getOldX()] = 0;
+		battleField[step.getNewY()][step.getNewX()] = step.getPlayerNumber();
 	}
-	public int getBattleField(int y, int x) {
-		try {
+	public int getBattleField(int y, int x)
+	{
+		try
+		{
 			return battleField[y][x];
 		}
-		catch (ArrayIndexOutOfBoundsException e) {		
+		catch (ArrayIndexOutOfBoundsException e)
+		{
 			return -1;
 		}
 	}
-	public void getBattleFieldInSystem() {
+	public void getBattleFieldInSystem()
+	{
+			System.out.print(" X");
+			for(int i = 0; i < X; i++)
+				System.out.print(" "+i);
+			System.out.println("\nY");
 			for(int i = 0; i < Y; i++) {
+				System.out.print(i+"  ");
 				for(int j = 0; j < X; j++)
 					System.out.print(battleField[i][j]+" ");
 				System.out.println();
 			}
 	}
-	public void setNewBattleField() {
+	public void setNewBattleField()
+	{
 		battleField = new int [Y][X];
 		for(int i = 0; i < Y; i++)
 			for(int j = 0; j < X; j++) {
@@ -201,31 +358,46 @@ class SAMA {
 	private static final String GAME = "game";
 	private static final String NEW = "new";
 	private static final String EXIT = "exit";
-	public static void main(String []args) throws IOException {
+	public static void main(String []args) throws IOException
+	{
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		boolean Exit=false;
 		while(Exit == false) {
 			String choice=br.readLine();
 			if(choice.equals(GAME))
 				game();
-			else if(choice.equals(NEW)) {
+			else if(choice.equals(NEW))
+			{
 			}
 			else if(choice.equals(EXIT))
 				Exit=true;
 		}
 	}
-	public static void game() throws IOException {
+	public static void game() throws IOException
+	{
 		Game g = new Game();
 		Step step = new Step();
 		g.setNewBattleField();
 		IPlayer p1 = new HumanPlayer(1);
 		IPlayer p2 = new HumanPlayer(2);
-		while(!g.getGameOver()) {
-			g.step(p1.doStep(g));
-			if(g.getGameOver())
-				return;
-			g.step(p2.doStep(g));
+		int numberOfTheWinner = 0;
+		String theWinner = "®¡¥¤¨â¥«ï ­¥â";
+		while(!g.getGameOver(step.getPlayerNumber()))
+		{
+			step = p1.doStep(g);
+			g.step(step);
+			if(g.getGameOver(step.getPlayerNumber())) {
+				numberOfTheWinner = 1;
+				theWinner = p1.getName();
+				break;
+			}
+			step = p2.doStep(g);
+			g.step(step);
 		}
-		return;
+		if(numberOfTheWinner == 0) {
+			numberOfTheWinner = 2;
+			theWinner = p2.getName();
+		}
+		System.out.print("®¡¥¤¨« ¨£à®ª ü"+numberOfTheWinner+" - "+theWinner);
 	}
 }
