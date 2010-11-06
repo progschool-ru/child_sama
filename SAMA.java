@@ -26,9 +26,9 @@ abstract class Player implements IPlayer
 			System.out.println("Повторите ввод");
 			name = br.readLine();
 		}
-
 	}
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 }
@@ -45,7 +45,8 @@ class HumanPlayer extends Player
 		step.setPlayerNumber(playerNumber);
 		System.out.println("Сейчас ходит игрок №"+playerNumber+" - "+name);
 		g.getBattleFieldInSystem();
-		for(;;) {
+		for(;;)
+		{
 			step = choicePawn(g, step);
 			step = choiceSquare(g, step);
 			if(step.getPlayerNumber() == playerNumber)
@@ -57,10 +58,12 @@ class HumanPlayer extends Player
 	protected Step choicePawn(Game g, Step step) throws IOException
 	{
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-		for (;;) {
+		for (;;)
+		{
 			System.out.println("Введите координаты пешки которой вы хотите походить");
 			String choice = br.readLine();
-			try {
+			try
+			{
 				String []XY = choice.split(" ");
 				step.setOldX(Integer.valueOf(XY[0]));
 				step.setOldY(Integer.valueOf(XY[1]));
@@ -88,7 +91,8 @@ class HumanPlayer extends Player
 			return step;
 		}
 	}
-	protected Step choiceSquare(Game g, Step step)throws IOException {
+	protected Step choiceSquare(Game g, Step step)throws IOException
+	{
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		for (;;) {
 			System.out.println("Введите координты клетки в которую вы хотите походить");
@@ -118,6 +122,12 @@ class HumanPlayer extends Player
 				System.out.println("где x y - координаты клетки");
 				continue;
 			}
+			if(g.getBattleField(step.getNewY(), step.getNewX()) == playerNumber)
+			{
+				System.out.println("На выбранной клетке стоит ваша пешка");
+				g.getBattleFieldInSystem();
+				continue;
+			}
 			int m;
 			if(playerNumber == 1)
 				m=-1;
@@ -128,12 +138,6 @@ class HumanPlayer extends Player
 				if(step.getNewX()-step.getOldX() > 1 || step.getNewX()-step.getOldX() < -1)
 				{
 					System.out.println("Ход невозможен");
-					continue;
-				}
-				if(g.getBattleField(step.getNewY(), step.getNewX()) == playerNumber)
-				{
-					System.out.println("На выбранной клетке стоит ваша пешка");
-					g.getBattleFieldInSystem();
 					continue;
 				}
 				if(step.getNewX()-step.getOldX() != 0 && g.getBattleField(step.getNewY(), step.getNewX()) == 0)
@@ -156,53 +160,27 @@ class HumanPlayer extends Player
 		}
 	}
 }
-class Step {
-	private int playerNumber;
-	private int oldX;
-	private int oldY;
-	private int newX;
-	private int newY;
-	public void setPlayerNumber(int playerNumber)
+/*class PCPlayer extends Player
+{
+	public PCPlayer(int playerNumber) throws IOException
 	{
-		this.playerNumber = playerNumber;
+		nameInit(playerNumber);
 	}
-	public void setOldX(int x)
+	public Step doStep(Game g) throws IOException
 	{
-		oldX = x;
+		Step step = new Step();
+		step.setPlayerNumber(playerNumber);
+		System.out.println("Сейчас ходит игрок №"+playerNumber+" - "+name);
+		g.getBattleFieldInSystem();
+		step = choiceStep(g, step);
+		return step;
 	}
-	public void setOldY(int y)
+	protected Step choiceStep(Game g, Step step) throws IOException
 	{
-		oldY = y;
-	}
-	public void setNewX(int x)
-	{
-		newX = x;
-	}
-	public void setNewY(int y)
-	{
-		newY = y;
-	}
-	public int getPlayerNumber()
-	{
-		return playerNumber;
-	}
-	public int getOldX()
-	{
-		return oldX;
-	}
-	public int getOldY()
-	{
-		return oldY;
-	}
-	public int getNewX()
-	{
-		return newX;
-	}
-	public int getNewY()
-	{
-		return newY;
+
 	}
 }
+*/
 class Game
 {
 	private int X=3;
@@ -354,7 +332,177 @@ class Game
 			}
 	}
 }
-class SAMA {
+
+class Step
+{
+	private int point;
+	private int playerNumber;
+	private int oldX;
+	private int oldY;
+	private int newX;
+	private int newY;
+	public void setPoint(int point)
+	{
+		this.point = point;
+	}
+	public void setPlayerNumber(int playerNumber)
+	{
+		this.playerNumber = playerNumber;
+	}
+	public void setOldX(int x)
+	{
+		oldX = x;
+	}
+	public void setOldY(int y)
+	{
+		oldY = y;
+	}
+	public void setNewX(int x)
+	{
+		newX = x;
+	}
+	public void setNewY(int y)
+	{
+		newY = y;
+	}
+	public int getPoint()
+	{
+		return point;
+	}
+	public int getPlayerNumber()
+	{
+		return playerNumber;
+	}
+	public int getOldX()
+	{
+		return oldX;
+	}
+	public int getOldY()
+	{
+		return oldY;
+	}
+	public int getNewX()
+	{
+		return newX;
+	}
+	public int getNewY()
+	{
+		return newY;
+	}
+}
+class DataSteps
+{
+
+	Step[] steps;
+	private String BF;
+	private int numberOfSteps;
+	public void setNumberOfSteps(int numberOfSteps)
+	{
+		this.numberOfSteps = numberOfSteps;
+	}
+	public int getNumberOfSteps()
+	{
+		return numberOfSteps;
+	}
+	public void setBF(String BF)
+	{
+		this.BF = BF;
+	}
+	public String getBF()
+	{
+		return BF;
+	}
+	public int getAllPoint()
+	{
+		int allPoint;
+		for(int i = 0; i < numberOfSteps; i++)
+			allPoint = allPoint + steps[i].getPoint;
+		return allPoint;
+	}
+}
+class Data
+{
+	int numberOfBF;
+	DataSteps[] dataSteps;
+	Data() throws IOException
+	{
+		BufferedReader br = new BufferedReader(new FileReader("data.txt"));
+		String str = br.readLine();
+		numberOfBF = Integer.valueOf(str);
+		dataSteps = new  DataSteps[numberOfBF];
+		for (int i = 0; i < numberOfBF; i++)
+		{
+			dataSteps[i] = new DataSteps();
+			String str1 = br.readLine();
+			dataSteps[i].setBF(str1);
+			String str2 = br.readLine();
+			int numberOfSteps = Integer.valueOf(str2);
+			dataSteps[i].steps = new Step[numberOfSteps];
+			dataSteps[i].setNumberOfSteps(numberOfSteps);
+			for(int j = 0; j < numberOfSteps; j++)
+			{
+				dataSteps[i].steps[j] = new Step();
+				String str3 = br.readLine();
+				String b[] = str3.split("\t");
+				dataSteps[i].steps[j].setOldX(Integer.valueOf(b[0]));
+				dataSteps[i].steps[j].setOldY(Integer.valueOf(b[1]));
+				dataSteps[i].steps[j].setNewX(Integer.valueOf(b[2]));
+				dataSteps[i].steps[j].setNewY(Integer.valueOf(b[3]));
+				dataSteps[i].steps[j].setPoint(Integer.valueOf(b[4]));
+			}
+		}
+	}
+	public void save() throws IOException
+	{
+		PrintWriter pw = new PrintWriter(new File("data.txt"));
+		pw.print(numberOfBF + "\n");
+		for (int i = 0; i < numberOfBF; i++)
+		{
+			pw.print(dataSteps[i].getBF() + "\n");
+			pw.print(dataSteps[i].getNumberOfSteps() + "\n");
+			for (int j = 0; j < dataSteps[i].getNumberOfSteps(); j++)
+			{
+				pw.print(dataSteps[i].steps[j].getOldX() + "\t");
+				pw.print(dataSteps[i].steps[j].getOldY() + "\t");
+				pw.print(dataSteps[i].steps[j].getNewX() + "\t");
+				pw.print(dataSteps[i].steps[j].getNewY() + "\t");
+				pw.print(dataSteps[i].steps[j].getPoint() + "\t");
+			}
+		}
+		pw.close();
+	}
+	public void save(DataSteps newStep) throws IOException
+	{
+		PrintWriter pw = new PrintWriter(new File("data.txt"));
+		pw.print(numberOfBF + "\n");
+		for (int i = 0; i < numberOfBF; i++)
+		{
+			pw.print(dataSteps[i].getBF() + "\n");
+			pw.print(dataSteps[i].getNumberOfSteps() + "\n");
+			for (int j = 0; j < dataSteps[i].getNumberOfSteps(); j++)
+			{
+				pw.print(dataSteps[i].steps[j].getOldX() + "\t");
+				pw.print(dataSteps[i].steps[j].getOldY() + "\t");
+				pw.print(dataSteps[i].steps[j].getNewX() + "\t");
+				pw.print(dataSteps[i].steps[j].getNewY() + "\t");
+				pw.print(dataSteps[i].steps[j].getPoint() + "\n");
+			}
+		}
+		pw.print(newStep.getBF() + "\n");
+		pw.print(newStep.getNumberOfSteps() + "\n");
+		for (int j = 0; j < newStep.getNumberOfSteps(); j++)
+		{
+			pw.print(newStep.steps[j].getOldX() + "\t");
+			pw.print(newStep.steps[j].getOldY() + "\t");
+			pw.print(newStep.steps[j].getNewX() + "\t");
+			pw.print(newStep.steps[j].getNewY() + "\t");
+			pw.print(newStep.steps[j].getPoint() + "\n");
+		}
+		pw.close();
+	}
+}
+class SAMA
+{
 	private static final String GAME = "game";
 	private static final String NEW = "new";
 	private static final String EXIT = "exit";
@@ -386,7 +534,8 @@ class SAMA {
 		{
 			step = p1.doStep(g);
 			g.step(step);
-			if(g.getGameOver(step.getPlayerNumber())) {
+			if(g.getGameOver(step.getPlayerNumber()))
+			{
 				numberOfTheWinner = 1;
 				theWinner = p1.getName();
 				break;
@@ -394,7 +543,8 @@ class SAMA {
 			step = p2.doStep(g);
 			g.step(step);
 		}
-		if(numberOfTheWinner == 0) {
+		if(numberOfTheWinner == 0)
+		{
 			numberOfTheWinner = 2;
 			theWinner = p2.getName();
 		}
