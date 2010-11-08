@@ -28,27 +28,23 @@ class SAMA
 		Step step = new Step();
 		g.setNewBattleField();
 		IPlayer p1 = new HumanPlayer(1);
-		IPlayer p2 = new HumanPlayer(2);
+		IPlayer p2 = new PCPlayer(2);
 		int numberOfTheWinner = 0;
 		String theWinner = "Победителя нет";
-		while(!g.getGameOver(step.getPlayerNumber()))
+		while(g.getGameOver(1) == 0)
 		{
 			step = p1.doStep(g);
 			g.step(step);
-			if(g.getGameOver(step.getPlayerNumber()))
+			if(g.getGameOver(2) != 0)
 			{
-				numberOfTheWinner = 1;
-				theWinner = p1.getName();
+				numberOfTheWinner = g.getGameOver(2);
 				break;
 			}
 			step = p2.doStep(g);
 			g.step(step);
 		}
 		if(numberOfTheWinner == 0)
-		{
-			numberOfTheWinner = 2;
-			theWinner = p2.getName();
-		}
-		System.out.println("Победил игрок №"+numberOfTheWinner+" - "+theWinner);
+			numberOfTheWinner = g.getGameOver(1);
+		System.out.println("Победил игрок №"+numberOfTheWinner);
 	}
 }

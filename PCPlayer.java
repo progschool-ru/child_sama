@@ -16,12 +16,11 @@ class PCPlayer extends Player
 		step = choiceStep(g, step);
 		return step;
 	}
-	protected Step choiceStep(Game g, Step step) throws IOException
+	private Step choiceStep(Game g, Step step) throws IOException
 	{
-		DataSteps ds = initDS(g); 
-
-
-		return step;	
+		DataSteps ds = initDS(g);
+		step = ds.steps[0];
+		return step;
 	}
 	private DataSteps initDS(Game g) throws IOException
 	{
@@ -29,13 +28,14 @@ class PCPlayer extends Player
 		for(int i = 0; i < d.numberOfBF; i++)
 			if(d.dataSteps[i].getBF().equals(g.getBF()))
 				return d.dataSteps[i];
-		return newDataStep(g); 
+		return newDataStep(g);
 	}
 	private DataSteps newDataStep(Game g) throws IOException
 	{
-		DataSteps ds = new DataSteps(); 
+		DataSteps ds = new DataSteps();
+		ds.setBF(g.getBF());
 		ds.setSteps(g.getNumberOfSteps(playerNumber));
-		ds.setSteps(g.getSteps(playerNumber));		
+		ds.setSteps(g.getSteps(playerNumber));
 		return ds;
 	}
 }

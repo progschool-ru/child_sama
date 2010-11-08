@@ -7,130 +7,148 @@ class Game
 	private int Y=3;
 	private boolean gameOver = false;
 	private int[][] battleField;
-	public String getBF() 
+	public String getBF()
 	{
-		String str = ""; 
-		for(int i = 0; i < Y; i++) 
+		String str = "";
+		for(int i = 0; i < Y; i++)
 			for(int j = 0; j < X; j++)
 				str = str + String.valueOf(battleField[i][j]);
-		return str;				
+		return str;
+	}
+	private boolean getPossHead(int playerNumber, int y, int x)
+	{
+		try
+		{
+			if(battleField[y+getCourse(playerNumber)][x] != 0)
+				return false;
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+			return false;
+		}
+		return true;
+	}
+	private boolean getPossLeft(int playerNumber, int y, int x)
+	{
+		try
+		{
+			if(battleField[y+getCourse(playerNumber)][x-1] == playerNumber)
+				return false;
+			if(battleField[y+getCourse(playerNumber)][x-1] == 0)
+				return false;
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+			return false;
+		}
+		return true;
+	}
+	private boolean getPossRight(int playerNumber, int y, int x)
+	{
+		try
+		{
+			if(battleField[y+getCourse(playerNumber)][x+1] == playerNumber)
+				return false;
+			if(battleField[y+getCourse(playerNumber)][x+1] == 0)
+				return false;
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+			return false;
+		}
+		return true;
+	}
+	private int getCourse(int playerNumber)
+	{
+		if(playerNumber == 1)
+			return -1;
+		return 1;
 	}
 	public int getNumberOfSteps(int playerNumber)
 	{
-
-
+		int NumberOfSteps = 0;;
+		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+				if(battleField[i][j] == playerNumber)
+				{
+					if(getPossLeft(playerNumber, i, j))
+						NumberOfSteps++;
+					if(getPossHead(playerNumber, i, j))
+						NumberOfSteps++;
+					if(getPossRight(playerNumber, i, j))
+						NumberOfSteps++;
+				}
+		return  NumberOfSteps;
 	}
-	public int getSteps(int playerNumber)
+	public Step[] getSteps(int playerNumber) throws IOException
 	{
-
-
-	}	
-	public boolean getGameOver(int playerNumber)
-	{
-		int p1 = 0, p2 = 0;
-		if(playerNumber == 1)
-		{
-			p1 = 0;
-			for(int j = 0; j < X; j++)
-				if(battleField[0][j] == 1)
-					p1 ++;
-			if(p1 != 0)
-				return true;
-		}
-		else
-		{
-			p2 = 0;
-			for(int j = 0; j < X; j++)
-				if(battleField[Y-1][j] == 2)
-					p2 ++;
-			if(p2 != 0)
-				return true;
-		}
+		Step[] steps = new Step [getNumberOfSteps(playerNumber)];
+		int s = 0;
 		for(int i = 0; i < Y; i++)
 			for(int j = 0; j < X; j++)
-			{
-				if(battleField[i][j] == 1)
+				if(battleField[i][j] == playerNumber)
 				{
-					if(battleField[i-1][j] == 2 || battleField[i-1][j] == 1)
-						p1 = 0;
-					else {
-						p1 ++;
-						i = Y;
-						j = X;
-					}
-					if (p1 == 0){
-						try
-						{
-							if(battleField[i-1][j-1] == 2) {
-								p1 ++;
-								i = Y;
-								j = X;
-							}
-						}
-						catch (ArrayIndexOutOfBoundsException e)
-						{
-						}
-						try
-						{
-							if(battleField[i-1][j+1] == 2) {
-								p1 ++;
-								i = Y;
-								j = X;
-							}
-						}
-						catch (ArrayIndexOutOfBoundsException e)
-						{
-						}
-					}
-				}
-			}
-		for(int i = 0; i < Y; i++)
-			for(int j = 0; j < X; j++)
-			{
-				if(battleField[i][j] == 2)
-				{
-					if(battleField[i+1][j] == 2 || battleField[i+1][j] == 1)
-						p2 = 0;
-					else {
-						p2 ++;
-						i = Y;
-						j = X;
-					}
-					if (p2 == 0)
+					if(getPossLeft(playerNumber, i, j))
 					{
-						try
-						{
-							if(battleField[i+1][j-1] == 2) {
-								p1 ++;
-								i = Y;
-								j = X;
-							}
-						}
-						catch (ArrayIndexOutOfBoundsException e)
-						{
-						}
-						try
-						{
-							if(battleField[i+1][j+1] == 2) {
-								p1 ++;
-								i = Y;
-								j = X;
-							}
-						}
-						catch (ArrayIndexOutOfBoundsException e)
-						{
-						}
+						steps[s] = new Step();
+						steps[s].setOldX(j);
+						steps[s].setOldY(i);
+						steps[s].setNewX(j-1);
+						steps[s].setNewY(i+getCourse(playerNumber));
+						steps[s].setPoint(15);
+						steps[s].setPlayerNumber(playerNumber);
+						s++;
+					}
+					if(getPossHead(playerNumber, i, j))
+					{
+						steps[s] = new Step();
+						steps[s].setOldX(j);
+						steps[s].setOldY(i);
+						steps[s].setNewX(j);
+						steps[s].setNewY(i+getCourse(playerNumber));
+						steps[s].setPoint(15);
+						steps[s].setPlayerNumber(playerNumber);
+						s++;
+					}
+					if(getPossRight(playerNumber, i, j))
+					{
+						steps[s] = new Step();
+						steps[s].setOldX(j);
+						steps[s].setOldY(i);
+						steps[s].setNewX(j+1);
+						steps[s].setNewY(i+getCourse(playerNumber));
+						steps[s].setPoint(15);
+						steps[s].setPlayerNumber(playerNumber);
+						s++;
 					}
 				}
-			}
-		if(p1 == 0 || p2 == 0)
-			return true;
-		return false;
+		return steps;
+	}
+	public int getGameOver(int playerNumber)
+	{
+  		for(int j = 0; j < X; j++)
+  			if(battleField[0][j] == 1)
+ 				return 1;
+ 		for(int j = 0; j < X; j++)
+ 			if(battleField[Y-1][j] == 2)
+  				return 2;
+ 		if(playerNumber == 1 && getNumberOfSteps(1) == 0)
+ 			return 2;
+ 		if(playerNumber == 2 && getNumberOfSteps(2) == 0)
+ 			return 1;
+ 		for(int i = 0; i < Y; i++)
+			for(int j = 0; j < X; j++)
+				if(battleField[i][j] == playerNumber)
+					return 0;
+		if(playerNumber == 1)
+			return 2;
+		return 1;
 	}
 	public void step(Step step)
 	{
 		battleField[step.getOldY()][step.getOldX()] = 0;
 		battleField[step.getNewY()][step.getNewX()] = step.getPlayerNumber();
+		getBattleFieldInSystem();
 	}
 	public int getBattleField(int y, int x)
 	{
