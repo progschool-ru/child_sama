@@ -19,7 +19,7 @@ class PCPlayer extends Player
 	private Step choiceStep(Game g, Step step) throws IOException
 	{
 		DataSteps ds = initDS(g);
-		step = ds.steps[0];
+		step = stepRandom(ds);
 		return step;
 	}
 	private DataSteps initDS(Game g) throws IOException
@@ -37,5 +37,16 @@ class PCPlayer extends Player
 		ds.setSteps(g.getNumberOfSteps(playerNumber));
 		ds.setSteps(g.getSteps(playerNumber));
 		return ds;
+	}
+	private Step stepRandom(DataSteps ds) throws IOException
+	{
+		Random random = new Random ();
+		int r = random.nextInt(ds.getAllPoint()+1);
+		for (int i = 0; i < ds.getNumberOfSteps(); i++) {
+			r = r - ds.steps[i].getPoint();
+			if(r <= 0 )
+				return ds.steps[i];
+		}
+		return ds.steps[ds.getNumberOfSteps()-1];
 	}
 }
