@@ -3,9 +3,13 @@ import java.util.*;
 
 class Data
 {
-	int numberOfBF;
+	private int numberOfBF;
 	DataSteps[] dataSteps;
-	Data() throws IOException
+	public int getNumberOfBF()
+	{
+		return numberOfBF;
+	}
+	Data(int playerNumber) throws IOException
 	{
 		BufferedReader br = new BufferedReader(new FileReader("data.txt"));
 		String str = br.readLine();
@@ -30,6 +34,7 @@ class Data
 				dataSteps[i].steps[j].setNewX(Integer.valueOf(b[2]));
 				dataSteps[i].steps[j].setNewY(Integer.valueOf(b[3]));
 				dataSteps[i].steps[j].setPoint(Integer.valueOf(b[4]));
+				dataSteps[i].steps[j].setPlayerNumber(playerNumber);
 			}
 		}
 	}
@@ -47,7 +52,7 @@ class Data
 				pw.print(dataSteps[i].steps[j].getOldY() + "\t");
 				pw.print(dataSteps[i].steps[j].getNewX() + "\t");
 				pw.print(dataSteps[i].steps[j].getNewY() + "\t");
-				pw.print(dataSteps[i].steps[j].getPoint() + "\t");
+				pw.print(dataSteps[i].steps[j].getPoint() + "\n");
 			}
 		}
 		pw.close();
@@ -55,7 +60,7 @@ class Data
 	public void save(DataSteps newStep) throws IOException
 	{
 		PrintWriter pw = new PrintWriter(new File("data.txt"));
-		pw.print(numberOfBF + "\n");
+		pw.print(numberOfBF+1 + "\n");
 		for (int i = 0; i < numberOfBF; i++)
 		{
 			pw.print(dataSteps[i].getBF() + "\n");

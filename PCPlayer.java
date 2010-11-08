@@ -24,11 +24,13 @@ class PCPlayer extends Player
 	}
 	private DataSteps initDS(Game g) throws IOException
 	{
-		Data d = new Data();
-		for(int i = 0; i < d.numberOfBF; i++)
+		Data d = new Data(playerNumber);
+		for(int i = 0; i < d.getNumberOfBF(); i++)
 			if(d.dataSteps[i].getBF().equals(g.getBF()))
 				return d.dataSteps[i];
-		return newDataStep(g);
+		DataSteps ds = newDataStep(g);
+		d.save(ds);
+		return ds;
 	}
 	private DataSteps newDataStep(Game g) throws IOException
 	{
@@ -41,11 +43,16 @@ class PCPlayer extends Player
 	private Step stepRandom(DataSteps ds) throws IOException
 	{
 		Random random = new Random ();
+		List l = new List();
 		int r = random.nextInt(ds.getAllPoint()+1);
-		for (int i = 0; i < ds.getNumberOfSteps(); i++) {
+		for (int i = 0; i < ds.getNumberOfSteps(); i++)
+		{
 			r = r - ds.steps[i].getPoint();
 			if(r <= 0 )
+			{
+				l.save(ds.getBF(), i);
 				return ds.steps[i];
+			}
 		}
 		return ds.steps[ds.getNumberOfSteps()-1];
 	}
