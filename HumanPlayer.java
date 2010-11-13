@@ -9,9 +9,10 @@ class HumanPlayer extends Player
 	}
 	public Step doStep(Game g) throws IOException
 	{
+		Text t = new Text();
 		Step step = new Step();
 		step.setPlayerNumber(playerNumber);
-		System.out.println("Сейчас ходит игрок №"+playerNumber+" - "+name);
+		System.out.println(t.NOW_GO_PLAYER+" "+playerNumber+" - "+name);
 		g.getBattleFieldInSystem();
 		for(;;)
 		{
@@ -25,10 +26,11 @@ class HumanPlayer extends Player
 	}
 	protected Step choicePawn(Game g, Step step) throws IOException
 	{
+		Text t = new Text();
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		for (;;)
 		{
-			System.out.println("Введите координаты пешки которой вы хотите походить");
+			System.out.println(t.ENTER_THE_PAWNs_COORDINATES);
 			String choice = br.readLine();
 			try
 			{
@@ -38,21 +40,17 @@ class HumanPlayer extends Player
 			}
 			catch (NumberFormatException e)
 			{
-				System.out.println("Вводится так:");
-				System.out.println("x y");
-				System.out.println("где x y - координтаы пешки");
+				System.out.println(t.HOW_ENTER_THE_PAWNs_COORDINATES);
 				continue;
 			}
 			catch (ArrayIndexOutOfBoundsException e2)
 			{
-				System.out.println("Вводится так:");
-				System.out.println("x y");
-				System.out.println("где x y - координтаы пешки");
+				System.out.println(t.HOW_ENTER_THE_PAWNs_COORDINATES);
 				continue;
 			}
 			if(g.getBattleField(step.getOldY(), step.getOldX()) != playerNumber)
 			{
-				System.out.println("На выбранной клетке нет вашей пешки");
+				System.out.println(t.PAWN_NO);
 				g.getBattleFieldInSystem();
 				continue;
 			}
@@ -61,12 +59,13 @@ class HumanPlayer extends Player
 	}
 	protected Step choiceSquare(Game g, Step step)throws IOException
 	{
+		Text t = new Text();
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		for (;;) {
-			System.out.println("Введите координты клетки в которую вы хотите походить");
-			System.out.println("Если вы желаете сменить пешку введите cp");
+			System.out.println(t.ENTER_THE_CAGEs_COORDINATES);
+			System.out.println(t.IF_YOU_WANT_TO_CHANGE_PAWN);
 			String choice = br.readLine();
-			if(choice.equals("cp"))
+			if(choice.equals(t.CHOOSE_PAWN))
 			{
 				step.setPlayerNumber(0);
 				return step;
@@ -78,21 +77,17 @@ class HumanPlayer extends Player
 				step.setNewY(Integer.valueOf(XY[1]));
 			}
 			catch (NumberFormatException e) {
-				System.out.println("Вводится так:");
-				System.out.println("x y");
-				System.out.println("где x y - координаты клетки");
+				System.out.println(t.HOW_ENTER_THE_CAGEs_COORDINATES);
 				continue;
 			}
 			catch (ArrayIndexOutOfBoundsException e2)
 			{
-				System.out.println("Вводится так:");
-				System.out.println("x y");
-				System.out.println("где x y - координаты клетки");
+				System.out.println(t.HOW_ENTER_THE_CAGEs_COORDINATES);
 				continue;
 			}
 			if(g.getBattleField(step.getNewY(), step.getNewX()) == playerNumber)
 			{
-				System.out.println("На выбранной клетке стоит ваша пешка");
+				System.out.println(t.PAWN_YES);
 				g.getBattleFieldInSystem();
 				continue;
 			}
@@ -105,23 +100,23 @@ class HumanPlayer extends Player
 			{
 				if(step.getNewX()-step.getOldX() > 1 || step.getNewX()-step.getOldX() < -1)
 				{
-					System.out.println("Ход невозможен");
+					System.out.println(t.PROGRESS_IN_THE_IMPOSSIBLE);
 					continue;
 				}
 				if(step.getNewX()-step.getOldX() != 0 && g.getBattleField(step.getNewY(), step.getNewX()) == 0)
 				{
-					System.out.println("Ход невозможен");
+					System.out.println(t.PROGRESS_IN_THE_IMPOSSIBLE);
 					continue;
 				}
 				if(step.getNewX()-step.getOldX() == 0 && g.getBattleField(step.getNewY(), step.getNewX()) != 0)
 				{
-					System.out.println("Ход невозможен");
+					System.out.println(t.PROGRESS_IN_THE_IMPOSSIBLE);
 					continue;
 				}
 			}
 			else
 			{
-				System.out.println("Ход невозможен");
+				System.out.println(t.PROGRESS_IN_THE_IMPOSSIBLE);
 				continue;
 			}
 			return step;

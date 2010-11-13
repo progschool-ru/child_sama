@@ -9,9 +9,10 @@ class PCPlayer extends Player
 	}
 	public Step doStep(Game g) throws IOException
 	{
+		Text t = new Text();
 		Step step = new Step();
 		step.setPlayerNumber(playerNumber);
-		System.out.println("Сейчас ходит игрок №"+playerNumber+" - "+name);
+		System.out.println(t.NOW_GO_PLAYER+" "+playerNumber+" - "+name);
 		g.getBattleFieldInSystem();
 		step = choiceStep(g, step);
 		return step;

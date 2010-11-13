@@ -95,7 +95,7 @@ class Game
 						steps[s].setOldY(i);
 						steps[s].setNewX(j-1);
 						steps[s].setNewY(i+getCourse(playerNumber));
-						steps[s].setPoint(15);
+						steps[s].setPoint(5);
 						steps[s].setPlayerNumber(playerNumber);
 						s++;
 					}
@@ -106,7 +106,7 @@ class Game
 						steps[s].setOldY(i);
 						steps[s].setNewX(j);
 						steps[s].setNewY(i+getCourse(playerNumber));
-						steps[s].setPoint(15);
+						steps[s].setPoint(5);
 						steps[s].setPlayerNumber(playerNumber);
 						s++;
 					}
@@ -117,7 +117,7 @@ class Game
 						steps[s].setOldY(i);
 						steps[s].setNewX(j+1);
 						steps[s].setNewY(i+getCourse(playerNumber));
-						steps[s].setPoint(15);
+						steps[s].setPoint(5);
 						steps[s].setPlayerNumber(playerNumber);
 						s++;
 					}
