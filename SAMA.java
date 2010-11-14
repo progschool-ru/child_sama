@@ -7,9 +7,10 @@ class SAMA
 	{
 		Text t = new Text();
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-		boolean Exit=false;
+		boolean Exit=false;		
 		while(Exit == false)
 		{
+			System.out.println(t.NEW_GAME);
 			String choice=br.readLine();
 			if(choice.equals(t.GAME))
 				game();

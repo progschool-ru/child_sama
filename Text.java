@@ -3,23 +3,24 @@ import java.util.*;
 
 class Text
 {
+        public final String NEW_GAME = "Если вы хотите:\nНачать игру, то введите game\nОбнулить знания PCPlayer, то введите new\nВыйти, то введите exit";
 	public final String GAME = "game";
 	public final String NEW = "new";
 	public final String EXIT = "exit";
 	public final String CHOOSE_PAWN = "cp";
-	public final String WINER_NUMBER = "╧юсхфшы шуЁюъ ╣";
-	public final String RETYPE = "╧ютЄюЁшЄх ттюф";
-	public final String NAME = "╚ь ";
-	public final String PLAYER = "шуЁюър";
-	public final String ENTER_THE_NAME = "┬тхфшЄх шь ";
-	public final String ARE_YOU_SURE = "┬√ єтхЁхэ√? (y / n)";
-	public final String NOW_GO_PLAYER = "╤хщўрё їюфшЄ шуЁюъ ╣";
-	public final String ENTER_THE_PAWNs_COORDINATES = "┬тхфшЄх ъююЁфшэрЄ√ ях°ъш ъюЄюЁющ т√ їюЄшЄх яюїюфшЄ№";
-	public final String ENTER_THE_CAGEs_COORDINATES = "┬тхфшЄх ъююЁфшэЄ√ ъыхЄъш т ъюЄюЁє■ т√ їюЄшЄх яюїюфшЄ№";
-	public final String HOW_ENTER_THE_PAWNs_COORDINATES = "┬тюфшЄё  Єръ:\nx y\nуфх x y - ъююЁфшэЄр√ ях°ъш";
-	public final String HOW_ENTER_THE_CAGEs_COORDINATES = "┬тюфшЄё  Єръ:\nx y\nуфх x y - ъююЁфшэЄр√ ъыхЄъш";
-	public final String IF_YOU_WANT_TO_CHANGE_PAWN = "┼ёыш т√ цхырхЄх ёьхэшЄ№ ях°ъє ттхфшЄх cp";
-	public final String PAWN_NO = "═р т√сЁрээющ ъыхЄъх эхЄ тр°хщ ях°ъш";
-    public final String PAWN_YES = "═р т√сЁрээющ ъыхЄъх ёЄюшЄ тр°р ях°ър";
-	public final String PROGRESS_IN_THE_IMPOSSIBLE = "╒юф эхтючьюцхэ";
+	public final String WINER_NUMBER = "Победил игрок №";
+	public final String RETYPE = "Повторите ввод";
+	public final String NAME = "Имя";
+	public final String PLAYER = "игрока";
+	public final String ENTER_THE_NAME = "Введите имя";
+	public final String ARE_YOU_SURE = "Вы уверены? (y / n)";
+	public final String NOW_GO_PLAYER = "Сейчас ходит игрок №";
+	public final String ENTER_THE_PAWNs_COORDINATES = "Введите координаты пешки которой вы хотите походить";
+	public final String ENTER_THE_CAGEs_COORDINATES = "Введите координты клетки в которую вы хотите походить";
+	public final String HOW_ENTER_THE_PAWNs_COORDINATES = "Вводится так:\nx y\nгде x y - координтаы пешки";
+	public final String HOW_ENTER_THE_CAGEs_COORDINATES = "Вводится так:\nx y\nгде x y - координтаы клетки";
+	public final String IF_YOU_WANT_TO_CHANGE_PAWN = "Если вы желаете сменить пешку введите cp";
+	public final String PAWN_NO = "На выбранной клетке нет вашей пешки";
+	public final String PAWN_YES = "На выбранной клетке стоит ваша пешка";
+	public final String PROGRESS_IN_THE_IMPOSSIBLE = "Ход невозможен";
 }
