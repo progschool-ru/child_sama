@@ -9,6 +9,8 @@ class HumanPlayer extends Player
 	}
 	public Step doStep(Step step, int n) throws IOException
 	{
+		if(playerNumber != step.getPlayerNumber())
+			return step;
 		if(step.getOldNumber() == -1)
 			step = choicePawn(step, n);
 		else
@@ -29,33 +31,13 @@ class HumanPlayer extends Player
 			step.setOldNumber(n);
 			return step;
 		}
-		int m, w;
-		if(step.getPlayerNumber() == 2)
+		step.setNewNumber(n);
+		if(step.getY(n) - step.getY(step.getOldNumber()) == step.getCourse(step.getPlayerNumber()))
 		{
-			m = -1;
-			w = 1;
-		}
-		else
-		{
-			m = 1;
-			w = 2;
-		}
-		if(step.getY(n) - step.getY(step.getOldNumber()) == m)
-		{
-			if((step.getX(n) - step.getX(step.getOldNumber()) == 1 || step.getX(n) - step.getX(step.getOldNumber()) == -1) && step.getNC(n) == w)
-			{
-				step.setNC(n , step.getPlayerNumber());
-				step.setNC(step.getOldNumber() , 0);
-				step.setOldNumber(-1);
-				step.setPlayerNumber(w);
-			}
+			if((step.getX(n) - step.getX(step.getOldNumber()) == 1 || step.getX(n) - step.getX(step.getOldNumber()) == -1) && step.getNC(n) == step.getW(step.getPlayerNumber()))
+				step = step.stepProc();
 			if(step.getX(n) - step.getX(step.getOldNumber()) == 0 && step.getNC(n) == 0)
-			{
-				step.setNC(n , step.getPlayerNumber());
-				step.setNC(step.getOldNumber() , 0);
-				step.setOldNumber(-1);
-				step.setPlayerNumber(w);
-			}
+				step = step.stepProc();
 		}
 		return step;
 	}

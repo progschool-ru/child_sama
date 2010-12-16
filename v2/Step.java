@@ -75,4 +75,113 @@ class Step
 	{
 		return n/3;
 	}
+	public boolean getGameOver()
+	{
+  		for(int j = 0; j < 3; j++)
+  			if(getNC(j) == 1)
+ 				return true;
+ 		for(int j = 6; j < 9; j++)
+ 			if(getNC(j) == 2)
+  				return true;
+ 		if(getNumberOfSteps(getW(playerNumber)) == 0)
+ 			return true;
+ 		for(int j = 0; j < 9; j++)
+			if(getNC(j) == playerNumber)
+				return false;
+		return true;
+	}
+	private boolean getPossHead(int n, int p)
+	{
+		if(n+3*getCourse(p) > 8 || n+3*getCourse(p) < 0)
+			return false;
+		if(getNC(n+3*getCourse(p)) != 0)
+			return false;
+		return true;
+	}
+	private boolean getPossLeft(int n, int p)
+	{
+		if(n%3 == 0)
+			return false;
+		if(getNC(n+2*getW(p)*getCourse(p)) == getW(p))
+			return true;
+		return false;
+	}
+	private boolean getPossRight(int n, int p)
+	{
+		if(n%3 == 2)
+			return false;
+		if(getNC(n+2*p*getCourse(p)) == getW(p))
+			return true;
+		return false;
+	}
+	public int getW(int p)
+	{
+		if(p == 1)
+			return 2;
+		return 1;
+	}
+	public int getCourse(int p)
+	{
+		if(p == 1)
+			return -1;
+		return 1;
+	}
+	public int getNumberOfSteps(int p)
+	{
+		int NumberOfSteps = 0;;
+		for(int i = 0; i < 9; i++)
+				if(getNC(i) == p)
+				{
+					if(getPossLeft(i ,p))
+						NumberOfSteps++;
+					if(getPossHead(i, p))
+						NumberOfSteps++;
+					if(getPossRight(i, p))
+						NumberOfSteps++;
+				}
+		return  NumberOfSteps;
+	}
+	public Step[] getSteps(int p) throws IOException
+	{
+		Step[] steps = new Step [getNumberOfSteps(p)];
+		int s = 0;
+		for(int i = 0; i < 9; i++)
+			if(getNC(i) == p)
+			{
+				if(getPossHead(i, p))
+				{
+					steps[s] = new Step(p, BF);
+					steps[s].setOldNumber(i);
+					steps[s].setNewNumber(i+3*getCourse(p));
+					steps[s].setPoint(5);
+					s++;
+				}
+				if(getPossLeft(i, p))
+				{
+					steps[s] = new Step(p, BF);
+					steps[s].setOldNumber(i);
+					steps[s].setNewNumber(i+2*getW(p)*getCourse(p));
+					steps[s].setPoint(5);
+					s++;
+				}
+				if(getPossRight(i, p))
+				{
+					steps[s] = new Step(playerNumber, BF);
+					steps[s].setOldNumber(i);
+					steps[s].setNewNumber(i+2*p*getCourse(p));
+					steps[s].setPoint(5);
+					s++;
+				}
+			}
+		return steps;
+	}
+	public Step stepProc()
+	{
+		setNC(newNumber , playerNumber);
+		setNC(oldNumber, 0);
+		oldNumber = -1;
+		newNumber = -1;
+		playerNumber = getW(playerNumber);
+		return this;
+	}
 }

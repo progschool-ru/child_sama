@@ -5,7 +5,7 @@ interface IPlayer
 {
 	public Step doStep(Step step, int n) throws IOException;
 	public String getName();
-//	public void carrotAndStick(int numberOfTheWinner) throws IOException;
+	public void carrotAndStick(int numberOfTheWinner) throws IOException;
 }
 
 abstract class Player implements IPlayer
@@ -15,27 +15,14 @@ abstract class Player implements IPlayer
 	protected void nameInit(int playerNumber) throws IOException
 	{
 		this.playerNumber = playerNumber;
-/*		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-		System.out.println(t.ENTER_THE_NAME+" "+playerNumber+" "+t.PLAYER);
-		name = br.readLine();
-		for(;;)
-		{
-			System.out.println(t.NAME+" "+playerNumber+" "+t.PLAYER+" - "+name+" "+t.ARE_YOU_SURE);
-			String choice = br.readLine();
-			if(choice.equals("y"))
-				return;
-			System.out.println(t.RETYPE);
-			name = br.readLine();
-		}
-*/
 	}
 	public String getName()
 	{
 		return name;
 	}
-/*	public void carrotAndStick(int numberOfTheWinner) throws IOException
+	public void carrotAndStick(int numberOfTheWinner) throws IOException
 	{
-		list l = new list();
+		List l = new List();
 		Data d = new Data(numberOfTheWinner);
 		int NSteps[] = l.getNSteps();
 		String BFs[] = l.getBFs();
@@ -62,5 +49,5 @@ abstract class Player implements IPlayer
 		else
 			step.setPoint(0);
 		return step;
-	} */
+	}
 }
