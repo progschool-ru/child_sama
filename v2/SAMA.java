@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
-public class SAMA extends Frame
+public class SAMA extends Frame implements ActionListener
 {
 	int mouseX = 0, mouseY = 0;
 	int set[][] = {{0, 30},{100,30},{200,30},{0, 130},{100, 130},{200, 130},{0, 230},{100, 230},{200, 230}};
@@ -13,7 +13,40 @@ public class SAMA extends Frame
 	Step step;
 	IPlayer p1;
 	IPlayer p2;
+	Button yes, no;
+	boolean butOff = true;
 	boolean gameOver = false;
+	public void actionPerformed(ActionEvent ae)
+	{
+		String str = ae.getActionCommand();
+		if(gameOver)
+		{
+			try
+			{
+				p2.carrotAndStick(step.getW(step.getPlayerNumber()));
+			}
+			catch(IOException ex) {}
+		}
+		if(str.equals("ДА"))
+		{
+			try
+			{
+				l.newList();
+			}
+			catch(IOException ex) {}
+			step.setPlayerNumber(1);
+			step.setBF("222000111");
+			remove(yes);
+			remove(no);
+			gameOver = false;
+			butOff = true;
+			repaint();
+		}
+		else if(str.equals("НЕТ"))
+		{
+			System.exit(0);
+		}
+	}
     public SAMA() throws IOException
 	{
 		addWindowListener(new MyWindowAdapter(this));
@@ -27,6 +60,15 @@ public class SAMA extends Frame
 		appwin.step = new Step(1, "222000111");
 		appwin.p1 = new HumanPlayer(1);
 		appwin.p2 = new PCPlayer(2);
+
+		appwin.setLayout(null);
+		appwin.yes = new Button ("ДА");
+		appwin.no = new Button ("НЕТ");
+		appwin.yes.setBounds(310, 80, 60, 30);
+		appwin.no.setBounds(380, 80, 60, 30);
+		appwin.yes.addActionListener(appwin);
+		appwin.no.addActionListener(appwin);
+
 		appwin.setSize(450, 370);
 		appwin.setTitle("SAMA");
 		appwin.setVisible(true);
@@ -35,6 +77,14 @@ public class SAMA extends Frame
 	{
 		if(gameOver)
 		{
+			if(butOff)
+			{
+				add(yes);
+				add(no);
+				butOff = false;
+			}
+			g.drawString("Хотите",355,45);
+			g.drawString("сыграть еще раз?",325,65);
 			if(step.getPlayerNumber() == 1)
 				g.drawString("Игра окончена, победили белые",10,352);
 			else
@@ -62,7 +112,8 @@ public class SAMA extends Frame
 		g.drawLine(0, 130, 300, 130);
 		g.drawLine(0, 230, 300, 230);
 		g.drawLine(0, 330, 300, 330);
-		for(int i = 0 ; i < 9; i++) {
+		for(int i = 0 ; i < 9; i++)
+		{
 			char c = step.getBF().charAt(i);
 			if (c == '2')
 			{
@@ -113,11 +164,14 @@ class MyWindowAdapter extends WindowAdapter
 	}
 	public void windowClosing(WindowEvent we)
 	{
-		try
+		if(s.gameOver)
 		{
-			s.p2.carrotAndStick(s.step.getW(s.step.getPlayerNumber()));
+			try
+			{
+				s.p2.carrotAndStick(s.step.getW(s.step.getPlayerNumber()));
+			}
+			catch(IOException ex) {}
 		}
-		catch(IOException ex) {}
 		System.exit(0);
 	}
 }
