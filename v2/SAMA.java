@@ -49,29 +49,29 @@ public class SAMA extends Frame implements ActionListener
 	}
     public SAMA() throws IOException
 	{
-		addWindowListener(new MyWindowAdapter(this));
-		addMouseListener(new MyMouseAdapter(this));
+		addWindowListener(new SAMAWindowAdapter(this));
+		addMouseListener(new SAMAMouseAdapter(this));
 	}
 	public static void main(String args[]) throws IOException
 	{
-		SAMA appwin = new SAMA();
-		appwin.l = new List();
-		appwin.l.newList();
-		appwin.step = new Step(1, "222000111");
-		appwin.p1 = new HumanPlayer(1);
-		appwin.p2 = new PCPlayer(2);
+		SAMA s = new SAMA();
+		s.l = new List();
+		s.l.newList();
+		s.step = new Step(1, "222000111");
+		s.p1 = new HumanPlayer(1);
+		s.p2 = new PCPlayer(2);
 
-		appwin.setLayout(null);
-		appwin.yes = new Button ("дю");
-		appwin.no = new Button ("мер");
-		appwin.yes.setBounds(310, 80, 60, 30);
-		appwin.no.setBounds(380, 80, 60, 30);
-		appwin.yes.addActionListener(appwin);
-		appwin.no.addActionListener(appwin);
+		s.setLayout(null);
+		s.yes = new Button ("дю");
+		s.no = new Button ("мер");
+		s.yes.setBounds(310, 80, 60, 30);
+		s.no.setBounds(380, 80, 60, 30);
+		s.yes.addActionListener(s);
+		s.no.addActionListener(s);
 
-		appwin.setSize(450, 370);
-		appwin.setTitle("SAMA");
-		appwin.setVisible(true);
+		s.setSize(450, 370);
+		s.setTitle("SAMA");
+		s.setVisible(true);
 	}
 	public void paint(Graphics g)
 	{
@@ -127,10 +127,10 @@ public class SAMA extends Frame implements ActionListener
 		}
 	}
 }
-class MyMouseAdapter extends MouseAdapter {
+class SAMAMouseAdapter extends MouseAdapter {
 	SAMA s;
 	int set[][] = {{0, 30},{100,30},{200,30},{0, 130},{100, 130},{200, 130},{0, 230},{100, 230},{200, 230}};
-	public MyMouseAdapter(SAMA s) throws IOException
+	public SAMAMouseAdapter(SAMA s) throws IOException
 	{
 		this.s = s;
 	}
@@ -155,10 +155,10 @@ class MyMouseAdapter extends MouseAdapter {
 	}
 }
 
-class MyWindowAdapter extends WindowAdapter
+class SAMAWindowAdapter extends WindowAdapter
 {
 	SAMA s;
-	public MyWindowAdapter(SAMA s) throws IOException
+	public SAMAWindowAdapter(SAMA s) throws IOException
 	{
 		this.s = s;
 	}

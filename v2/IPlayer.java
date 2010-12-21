@@ -24,6 +24,7 @@ abstract class Player implements IPlayer
 	{
 		List l = new List();
 		Data d = new Data(numberOfTheWinner);
+		DataForGraph DG = new DataForGraph();
 		int NSteps[] = l.getNSteps();
 		String BFs[] = l.getBFs();
 		for(int i = 0; i < l.getNumberOfBF(); i++)
@@ -35,6 +36,7 @@ abstract class Player implements IPlayer
 					else
 						d.dataSteps[j].steps[NSteps[i]] = stick(d.dataSteps[j].steps[NSteps[i]]);
 				}
+		DG.save(numberOfTheWinner);
 		d.save();
 	}
 	private static Step carrot(Step step) throws IOException
