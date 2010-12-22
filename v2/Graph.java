@@ -4,25 +4,34 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
-public class Graph extends Frame
+public class Graph extends Frame implements ActionListener
 {
 DataForGraph DG;
 int[][] y;
+Button up;
+	public void actionPerformed(ActionEvent ae)
+	{
+		repaint();
+	}
     public Graph() throws IOException
 	{
+		setLayout(null);
+		up = new Button ("Обновить график");
+		up.setBounds(245, 380, 130, 20);
+		add(up);
+		up.addActionListener(this);
+		DG = new DataForGraph();
+		y = DG.getY();
 		addWindowListener(new GraphWindowAdapter());
-	}
-	public static void main(String args[]) throws IOException
-	{
-		Graph graph = new Graph();
-		graph.DG = new DataForGraph();
-		graph.y = graph.DG.getY();
-		graph.setSize(600, 400);
-		graph.setTitle("Graph");
-		graph.setVisible(true);
 	}
 	public void paint(Graphics g)
 	{
+		try
+		{
+			DG.update();
+		}
+		catch(IOException ex) {}
+		y = DG.getY();
 		g.setColor(Color.black);
 		g.drawString("Номер игры", 270,375);
 		g.drawLine(110, 383, 115, 388);

@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
-public class SAMA extends Frame implements ActionListener
+public class SAMA extends Frame implements ActionListener, ItemListener
 {
 	int mouseX = 0, mouseY = 0;
 	int set[][] = {{0, 30},{100,30},{200,30},{0, 130},{100, 130},{200, 130},{0, 230},{100, 230},{200, 230}};
@@ -14,8 +14,11 @@ public class SAMA extends Frame implements ActionListener
 	IPlayer p1;
 	IPlayer p2;
 	Button yes, no;
+	CheckboxGroup GBG;
+	Checkbox graphOn, graphOff;
 	boolean butOff = true;
 	boolean gameOver = false;
+	Graph graph;
 	public void actionPerformed(ActionEvent ae)
 	{
 		String str = ae.getActionCommand();
@@ -47,6 +50,13 @@ public class SAMA extends Frame implements ActionListener
 			System.exit(0);
 		}
 	}
+	public void itemStateChanged(ItemEvent ie)
+	{
+		if(graphOn.getState())
+			graph.setVisible(true);
+		if(graphOff.getState())
+			graph.setVisible(false);
+	}
     public SAMA() throws IOException
 	{
 		addWindowListener(new SAMAWindowAdapter(this));
@@ -55,6 +65,7 @@ public class SAMA extends Frame implements ActionListener
 	public static void main(String args[]) throws IOException
 	{
 		SAMA s = new SAMA();
+		s.graph = new Graph();
 		s.l = new List();
 		s.l.newList();
 		s.step = new Step(1, "222000111");
@@ -64,11 +75,23 @@ public class SAMA extends Frame implements ActionListener
 		s.setLayout(null);
 		s.yes = new Button ("ƒ¿");
 		s.no = new Button ("Õ≈“");
+		s.GBG = new CheckboxGroup();
+		s.graphOn = new Checkbox("√–¿‘»  ¬ À",false , s.GBG);
+		s.graphOff = new Checkbox("√–¿‘»  ¬€ À",true , s.GBG);
+		s.graphOn.setBounds(310, 310, 130, 30);
+		s.graphOff.setBounds(310, 340, 130, 30);
+		s.add(s.graphOn);
+		s.add(s.graphOff);
 		s.yes.setBounds(310, 80, 60, 30);
 		s.no.setBounds(380, 80, 60, 30);
 		s.yes.addActionListener(s);
 		s.no.addActionListener(s);
+		s.graphOn.addItemListener(s);
+		s.graphOff.addItemListener(s);
 
+		s.graph.setSize(600, 405);
+		s.graph.setTitle("Graph");
+		s.graph.setVisible(false);
 		s.setSize(450, 370);
 		s.setTitle("SAMA");
 		s.setVisible(true);
