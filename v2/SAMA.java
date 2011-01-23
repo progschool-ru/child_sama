@@ -7,9 +7,10 @@ import java.util.*;
 public class SAMA extends Frame implements ActionListener, ItemListener
 {
 	int mouseX = 0, mouseY = 0;
+	final int OVAL_PADDING = 10;
 	int set[][] = {{0, 30},{100,30},{200,30},{0, 130},{100, 130},{200, 130},{0, 230},{100, 230},{200, 230}};
-	int tab[][] = {{10, 40},{110,40},{210,40},{10, 140},{110, 140},{210, 140},{10, 240},{110, 240},{210, 240}};
 	List l;
+	Text text;
 	Step step;
 	IPlayer p1;
 	IPlayer p2;
@@ -19,44 +20,7 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 	boolean butOff = true;
 	boolean gameOver = false;
 	Graph graph;
-	public void actionPerformed(ActionEvent ae)
-	{
-		String str = ae.getActionCommand();
-		if(gameOver)
-		{
-			try
-			{
-				p2.carrotAndStick(step.getW(step.getPlayerNumber()));
-			}
-			catch(IOException ex) {}
-		}
-		if(str.equals("ДА"))
-		{
-			try
-			{
-				l.newList();
-			}
-			catch(IOException ex) {}
-			step.setPlayerNumber(1);
-			step.setBF("222000111");
-			remove(yes);
-			remove(no);
-			gameOver = false;
-			butOff = true;
-			repaint();
-		}
-		else if(str.equals("НЕТ"))
-		{
-			System.exit(0);
-		}
-	}
-	public void itemStateChanged(ItemEvent ie)
-	{
-		if(graphOn.getState())
-			graph.setVisible(true);
-		if(graphOff.getState())
-			graph.setVisible(false);
-	}
+
     public SAMA() throws IOException
 	{
 		addWindowListener(new SAMAWindowAdapter(this));
@@ -68,16 +32,17 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 		s.graph = new Graph();
 		s.l = new List();
 		s.l.newList();
+		s.text = new Text();
 		s.step = new Step(1, "222000111");
 		s.p1 = new HumanPlayer(1);
 		s.p2 = new PCPlayer(2);
 
 		s.setLayout(null);
-		s.yes = new Button ("ДА");
-		s.no = new Button ("НЕТ");
+		s.yes = new Button (s.text.YES);
+		s.no = new Button (s.text.NO);
 		s.GBG = new CheckboxGroup();
-		s.graphOn = new Checkbox("ГРАФИК ВКЛ",false , s.GBG);
-		s.graphOff = new Checkbox("ГРАФИК ВЫКЛ",true , s.GBG);
+		s.graphOn = new Checkbox(s.text.GRAPH_ON, false , s.GBG);
+		s.graphOff = new Checkbox(s.text.GRAPH_OFF, true , s.GBG);
 		s.graphOn.setBounds(310, 310, 130, 30);
 		s.graphOff.setBounds(310, 340, 130, 30);
 		s.add(s.graphOn);
@@ -88,8 +53,10 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 		s.no.addActionListener(s);
 		s.graphOn.addItemListener(s);
 		s.graphOff.addItemListener(s);
+		s.yes.setActionCommand("yes");
+		s.no.setActionCommand("no");
 
-		s.graph.setSize(600, 405);
+		s.graph.setSize(600, 620);
 		s.graph.setTitle("Graph");
 		s.graph.setVisible(false);
 		s.setSize(450, 370);
@@ -106,24 +73,24 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 				add(no);
 				butOff = false;
 			}
-			g.drawString("Хотите",355,45);
-			g.drawString("сыграть еще раз?",325,65);
+			g.drawString(text.YOU_WANT, 355, 45);
+			g.drawString(text. PLAY_MORE, 325, 65);
 			if(step.getPlayerNumber() == 1)
-				g.drawString("Игра окончена, победили белые",10,352);
+				g.drawString(text.WIN_WHITE, 10, 352);
 			else
-				g.drawString("Игра окончена, победили черные",10,352);
+				g.drawString(text.WIN_BLACK, 10, 352);
 		}
 		else
 		{
 			if(step.getPlayerNumber() == 1)
-				g.drawString("Ходят черные",10,342);
+				g.drawString(text.NEXT_BLACK, 10, 342);
 			else
-				g.drawString("Ходят белые",10,342);
+				g.drawString(text.NEXT_WHITE, 10, 342);
 			if(step.getOldNumber() == -1)
-				g.drawString("Пешка не выбранна",10,362);
+				g.drawString(text.PAWN_IS_NOT_SELECTED, 10, 362);
 			else
 			{
-				g.drawString("Пешка выбранна",10,362);
+				g.drawString(text.PAWN_SELECTED, 10, 362);
 				g.setColor(Color.green);
 				g.fillRect(set[step.getOldNumber()][0], set[step.getOldNumber()][1], 100, 100);
 			}
@@ -141,18 +108,60 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 			if (c == '2')
 			{
 				g.setColor(Color.white);
-				g.fillOval(tab[i][0], tab[i][1], 80, 80);
+				g.fillOval(getTab(i, 0), getTab(i, 1), 80, 80);
 				g.setColor(Color.black);
-				g.drawOval(tab[i][0], tab[i][1], 80, 80);
+				g.drawOval(getTab(i, 0), getTab(i, 1), 80, 80);
 			}
 			else if (c == '1')
-				g.fillOval(tab[i][0], tab[i][1], 80, 80);
+				g.fillOval(getTab(i, 0), getTab(i, 1), 80, 80);
 		}
+	}
+	public void actionPerformed(ActionEvent ae)
+	{
+		String str = ae.getActionCommand();
+		if(gameOver)
+		{
+			try
+			{
+				p2.carrotAndStick(step.getW(step.getPlayerNumber()));
+			}
+			catch(IOException ex) {}
+		}
+		if(str.equals("yes"))
+		{
+			try
+			{
+				l.newList();
+			}
+			catch(IOException ex) {}
+			step.setPlayerNumber(1);
+			step.setBF("222000111");
+			remove(yes);
+			remove(no);
+			gameOver = false;
+			butOff = true;
+			repaint();
+		}
+		else if(str.equals("no"))
+		{
+			System.exit(0);
+		}
+	}
+	public void itemStateChanged(ItemEvent ie)
+	{
+		if(graphOn.getState())
+			graph.setVisible(true);
+		if(graphOff.getState())
+			graph.setVisible(false);
+	}
+
+	public int getTab(int i, int j)
+	{
+		return set[i][j] + OVAL_PADDING;
 	}
 }
 class SAMAMouseAdapter extends MouseAdapter {
 	SAMA s;
-	int set[][] = {{0, 30},{100,30},{200,30},{0, 130},{100, 130},{200, 130},{0, 230},{100, 230},{200, 230}};
 	public SAMAMouseAdapter(SAMA s) throws IOException
 	{
 		this.s = s;
@@ -162,7 +171,7 @@ class SAMAMouseAdapter extends MouseAdapter {
 		if(!s.gameOver)
 		{
 			for(int i = 0; i < 9; i++)
-				if(me.getX() > set[i][0] && me.getX() < set[i][0]+100 && me.getY() > set[i][1] && me.getY() < set[i][1]+100)
+				if(me.getX() > s.set[i][0] && me.getX() < s.set[i][0]+100 && me.getY() > s.set[i][1] && me.getY() < s.set[i][1]+100)
 				{
 					try
 					{

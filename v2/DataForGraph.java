@@ -5,10 +5,10 @@ class DataForGraph
 {
 	private int numberOfGames;
 	private int[] numberOfWinners;
-	private int getMax()
+	private int getMax(int n)
 	{
 		int max = 0, arr = 0;
-		for(int i = 0; i < numberOfGames; i++)
+		for(int i = n; i < n+100; i++)
 		{
 			if(numberOfWinners[i] == 1)
 				arr++;
@@ -23,17 +23,17 @@ class DataForGraph
 	{
 		return numberOfGames;
 	}
-	public int[][] getY()
+	public int[][] getY(int n)
 	{
-		int [][]y = new int[numberOfGames][2];
-		y[0][0] = 350-5*getMax();
-		for( int i = 0; i < numberOfGames; i++)
+		int [][]y = new int[100][2];
+		y[0][0] = 550-5*getMax(n);
+		for( int i = 0; i < 100; i++)
 		{
-			if(numberOfWinners[i] == 1)
+			if(numberOfWinners[i+n] == 1)
 		 		y[i][1] = y[i][0] + 5;
 		 	else
 		 		y[i][1] = y[i][0] - 5;
-		 	if(i+1 != numberOfGames)
+		 	if(i+1 != 100)
 				y[i+1][0] = y[i][1];
 		}
 		return y;
