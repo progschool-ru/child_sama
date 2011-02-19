@@ -8,20 +8,14 @@ public class Graph extends Frame implements ActionListener, AdjustmentListener
 {
 	DataForGraph DG;
 	int[][] y;
-//	Button up;
 	Scrollbar SB;
     public Graph() throws IOException
 	{
 		setLayout(null);
-	//	up = new Button ("Обновить график");
-	//	up.setBounds(245, 380, 130, 20);
-	//	add(up);
-	//	up.addActionListener(this);
 		DG = new DataForGraph();
 		addWindowListener(new GraphWindowAdapter());
-
-		SB = new Scrollbar(Scrollbar.HORIZONTAL, 0, 20, 0, DG.getNumberOfGames()-80);
-		SB.setBounds(50, 565, 500, 15);
+		SB = new Scrollbar(Scrollbar.HORIZONTAL, 0, 20, 0, DG.getNumberOfGames() - DG.WIDTH + 20);
+		SB.setBounds(DG.INDENT, DG.HEIGHT*DG.NET + DG.INDENT + 15, DG.WIDTH*DG.NET, 15);
 		add(SB);
 		SB.addAdjustmentListener(this);
 	}
@@ -32,10 +26,11 @@ public class Graph extends Frame implements ActionListener, AdjustmentListener
 			DG.update();
 		}
 		catch(IOException ex) {}
-		if(SB.getMaximum() != DG.getNumberOfGames()-80)
-			SB.setValues(0, 20, 0, DG.getNumberOfGames()-80);
+		if(SB.getMaximum() != DG.getNumberOfGames() - DG.WIDTH + 20)
+			SB.setValues(0, 20, 0, DG.getNumberOfGames() - DG.WIDTH + 20);
 		y = DG.getY(SB.getValue());
 		g.setColor(Color.black);
+
 /*		g.drawString("Номер игры", 270,375);
 		g.drawLine(110, 383, 115, 388);
 		g.drawLine(110, 384, 115, 389);
@@ -47,23 +42,23 @@ public class Graph extends Frame implements ActionListener, AdjustmentListener
 		g.drawString("- Победа игрока №2", 400,390);
 */
 
-		for(int i = 50; i <= 550; i += 5)
-			if(i%50 == 0)
+		for(int i = DG.INDENT; i <= DG.WIDTH*DG.NET + DG.INDENT; i += DG.NET)
+			if(i%DG.INDENT == 0)
 			{
-				g.drawLine(i, 50, i, 553);
-				String str = Integer.toString((i-50)/5+SB.getValue());
-				g.drawString(str, i,563);
+				g.drawLine(i, DG.INDENT, i, DG.HEIGHT*DG.NET + DG.INDENT+3);
+				String str = Integer.toString((i-DG.INDENT)/5+SB.getValue());
+				g.drawString(str, i, DG.HEIGHT*DG.NET + DG.INDENT+13);
 			}
 			else
-				g.drawLine(i, 50, i, 550);
-		for(int i = 50; i <= 550; i += 5)
-			g.drawLine(50, i, 550, i);
+				g.drawLine(i, DG.INDENT, i, DG.HEIGHT*DG.NET + DG.INDENT);
+		for(int i = DG.INDENT; i <= DG.HEIGHT*DG.NET + DG.INDENT; i += 5)
+			g.drawLine(DG.INDENT, i, DG.WIDTH*DG.NET + DG.INDENT, i);
 
-		for( int i = 0; i < 100; i++)
+		for( int i = 0; i < DG.WIDTH; i++)
 		{
-			g.drawLine(50+i*5, y[i][0]+1, 50+(i+1)*5, y[i][1]+1);
-			g.drawLine(50+i*5, y[i][0], 50+(i+1)*5, y[i][1]);
-			g.drawLine(50+i*5, y[i][0]-1, 50+(i+1)*5, y[i][1]-1);
+			g.drawLine(DG.INDENT+i*DG.NET, y[i][0]+1, DG.INDENT+(i+1)*DG.NET, y[i][1]+1);
+			g.drawLine(DG.INDENT+i*DG.NET, y[i][0]  , DG.INDENT+(i+1)*DG.NET, y[i][1]);
+			g.drawLine(DG.INDENT+i*DG.NET, y[i][0]-1, DG.INDENT+(i+1)*DG.NET, y[i][1]-1);
 		}
 	}
 	public void actionPerformed(ActionEvent ae)

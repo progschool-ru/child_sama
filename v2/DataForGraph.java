@@ -5,19 +5,52 @@ class DataForGraph
 {
 	private int numberOfGames;
 	private int[] numberOfWinners;
+
+	public int HEIGHT = 70;
+	public int WIDTH = 70;
+	public int NET = 5;
+	public int INDENT = 50;
+
 	private int getMax(int n)
 	{
 		int max = 0, arr = 0;
-		for(int i = n; i < n+100; i++)
+		if(numberOfGames < WIDTH)
+			for(int i = n; i < n + numberOfGames ; i++)
+			{
+				if(numberOfWinners[i] == 1)
+					arr++;
+				else
+					arr--;
+				if(arr > max)
+					max = arr;
+			}
+		else
+			for(int i = n; i < n + WIDTH ; i++)
+			{
+				if(numberOfWinners[i] == 1)
+					arr++;
+				else
+					arr--;
+				if(arr > max)
+					max = arr;
+			}
+		return max + 1;
+	}
+	public int getH(int n)
+	{
+		int max = 0,min = 0, arr = 0;
+		for(int i = n; i < n + WIDTH; i++)
 		{
 			if(numberOfWinners[i] == 1)
 				arr++;
 			else
 				arr--;
+			if(arr < min)
+				min = arr;
 			if(arr > max)
 				max = arr;
 		}
-		return max+1;
+		return min + max;
 	}
 	public int getNumberOfGames()
 	{
@@ -25,15 +58,30 @@ class DataForGraph
 	}
 	public int[][] getY(int n)
 	{
-		int [][]y = new int[100][2];
-		y[0][0] = 550-5*getMax(n);
-		for( int i = 0; i < 100; i++)
+		if(numberOfGames < WIDTH)
+		{
+			int [][]y = new int[numberOfGames][2];
+			y[0][0] = HEIGHT*NET + INDENT - NET*getMax(n);
+			for( int i = 0; i < numberOfGames; i++)
+			{
+				if(numberOfWinners[i] == 1)
+			 		y[i][1] = y[i][0] + NET;
+			 	else
+			 		y[i][1] = y[i][0] - NET;
+			 	if(i+1 != numberOfGames)
+					y[i+1][0] = y[i][1];
+			}
+			return y;
+		}
+		int [][]y = new int[WIDTH][2];
+		y[0][0] = HEIGHT*NET + INDENT - NET*getMax(n);
+		for( int i = 0; i < WIDTH; i++)
 		{
 			if(numberOfWinners[i+n] == 1)
-		 		y[i][1] = y[i][0] + 5;
+		 		y[i][1] = y[i][0] + NET;
 		 	else
-		 		y[i][1] = y[i][0] - 5;
-		 	if(i+1 != 100)
+		 		y[i][1] = y[i][0] - NET;
+		 	if(i+1 != WIDTH)
 				y[i+1][0] = y[i][1];
 		}
 		return y;

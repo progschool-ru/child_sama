@@ -83,7 +83,7 @@ class Step
  		for(int j = 6; j < 9; j++)
  			if(getNC(j) == 2)
   				return true;
- 		if(getNumberOfSteps(getW(playerNumber)) == 0)
+ 		if(getNumberOfSteps(playerNumber) == 0)
  			return true;
  		for(int j = 0; j < 9; j++)
 			if(getNC(j) == playerNumber)

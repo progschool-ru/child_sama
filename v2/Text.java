@@ -12,4 +12,7 @@ class Text
 	final String PAWN_IS_NOT_SELECTED = "Пешка не выбрана";
 	final String YOU_WANT = "Хотите";
 	final String PLAY_MORE = "сыграть еще раз?";
+	final String HUMAN_ON = "человек";
+	final String PC_ON = "компьютер";
+	final String OPPONENT = "Противник:";
 }

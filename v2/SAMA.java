@@ -17,6 +17,8 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 	Button yes, no;
 	CheckboxGroup GBG;
 	Checkbox graphOn, graphOff;
+	CheckboxGroup OppBG;
+	Checkbox PC, Human;
 	boolean butOff = true;
 	boolean gameOver = false;
 	Graph graph;
@@ -34,12 +36,20 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 		s.l.newList();
 		s.text = new Text();
 		s.step = new Step(1, "222000111");
+
 		s.p1 = new HumanPlayer(1);
 		s.p2 = new PCPlayer(2);
 
 		s.setLayout(null);
 		s.yes = new Button (s.text.YES);
 		s.no = new Button (s.text.NO);
+		s.OppBG = new CheckboxGroup();
+		s.Human = new Checkbox(s.text.HUMAN_ON, false , s.OppBG);
+		s.PC = new Checkbox(s.text.PC_ON, true , s.OppBG);
+		s.Human.setBounds(310, 220, 130, 30);
+		s.PC.setBounds(310, 250, 130, 30);
+		s.add(s.Human);
+		s.add(s.PC);
 		s.GBG = new CheckboxGroup();
 		s.graphOn = new Checkbox(s.text.GRAPH_ON, false , s.GBG);
 		s.graphOff = new Checkbox(s.text.GRAPH_OFF, true , s.GBG);
@@ -51,12 +61,14 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 		s.no.setBounds(380, 80, 60, 30);
 		s.yes.addActionListener(s);
 		s.no.addActionListener(s);
+		s.Human.addItemListener(s);
+		s.PC.addItemListener(s);
 		s.graphOn.addItemListener(s);
 		s.graphOff.addItemListener(s);
 		s.yes.setActionCommand("yes");
 		s.no.setActionCommand("no");
 
-		s.graph.setSize(600, 620);
+		s.graph.setSize(s.graph.DG.WIDTH*s.graph.DG.NET+3*s.graph.DG.INDENT, s.graph.DG.HEIGHT*s.graph.DG.NET+3*s.graph.DG.INDENT);
 		s.graph.setTitle("Graph");
 		s.graph.setVisible(false);
 		s.setSize(450, 370);
@@ -65,6 +77,7 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 	}
 	public void paint(Graphics g)
 	{
+		g.drawString(text.OPPONENT, 315, 210);
 		if(gameOver)
 		{
 			if(butOff)
@@ -153,6 +166,18 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 			graph.setVisible(true);
 		if(graphOff.getState())
 			graph.setVisible(false);
+		if(PC.getState())
+			try
+			{
+				p2 = new PCPlayer(2);
+			}
+			catch(IOException ex) {}
+		if(Human.getState())
+			try
+			{
+				p2 = new HumanPlayer(2);
+			}
+			catch(IOException ex) {}
 	}
 
 	public int getTab(int i, int j)
