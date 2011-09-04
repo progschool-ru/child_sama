@@ -30,6 +30,9 @@ public class SAMA extends Frame implements ActionListener, ItemListener
 	}
 	public static void main(String args[]) throws IOException
 	{
+		FilesToucher ft = new FilesToucher();
+		ft.touch();
+		
 		SAMA s = new SAMA();
 		s.graph = new Graph();
 		s.l = new List();
